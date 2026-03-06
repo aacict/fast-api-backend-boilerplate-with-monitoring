@@ -13,6 +13,32 @@ services:
       - grafana
     networks:
       - backend-network
+
+  db:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jobportal
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - backend-network
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -62,6 +88,7 @@ volumes:
   grafana-data:
   loki-data:
   loki-config:
+  postgres_data:
 
 networks:
   backend-network:
